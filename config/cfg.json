@@ -1,0 +1,193 @@
+{
+    "ria.ru": {
+        "content_selectors": [
+            ".article__body"
+        ],
+        "paragraph_selector": "p",
+        "list_item_selector": "li",
+        "text_div_selector": ".article__text",
+        "table_selector": "table" 
+    },
+    "radiosputnik.ru": {
+        "content_selectors": [
+            ".article__body"
+        ],
+        "paragraph_selector": "p",
+        "list_item_selector": "li",
+        "text_div_selector": ".article__text",
+        "table_selector": "table" 
+    },
+    "1prime.ru": {
+        "content_selectors": [
+            ".article__body"
+        ],
+        "paragraph_selector": "p",
+        "list_item_selector": "li",
+        "text_div_selector": ".article__text",
+        "table_selector": "table" 
+    },
+    "sputnik.by":{
+        "content_selectors": [
+            ".article__body"
+        ],
+        "paragraph_selector": "p",
+        "list_item_selector": "li",
+        "text_div_selector": ".article__text",
+        "table_selector": "table"
+    },
+    "iz.ru":{
+        "content_selectors": [
+            "[itemprop=\"articleBody\"]"
+        ],
+        "paragraph_selector": "p",
+        "list_item_selector": "li",
+        "table_selector": "table" 
+    },
+    "kommersant.ru":{
+        "content_selectors": [
+            ".article_text_wrapper"
+        ],
+        "paragraph_selector": "p.doc__text:not(.document_authors)",
+        "table_selector": "table" 
+    },
+    "ixbt.com":{
+        "content_selectors": [
+            "[itemprop=\"articleBody\"]"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    },
+    "nsn.fm":{
+        "content_selectors": [
+            "[itemprop=\"articleBody\"]"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    },
+    "aif.ru":{
+        "content_selectors": [
+            ".article_text"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    },
+    "rbc.ru":{
+        "content_selectors": [
+            "[itemprop=\"articleBody\"]"
+        ],
+        "paragraph_selector": "p:not(.article__special_container *)",
+        "table_selector": "table" 
+    },
+    "life.ru":{
+        "content_selectors": [
+            ".styles_bodyWrapper__3d_FQ"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    },
+    "interfax.ru":{
+        "content_selectors": [
+            "[itemprop=\"articleBody\"]"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    },
+    "lenta.ru":{
+        "content_selectors": [
+            ".topic-body__content"
+        ],
+        "paragraph_selector": "p.topic-body__content-text",
+        "table_selector": "table" 
+    },
+    "mk.ru":{
+        "content_selectors": [
+            "[itemprop=\"articleBody\"]"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    },
+    "kazanfirst.ru":{
+        "content_selectors": [
+            ".entry-content"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    },
+    "tvzvezda.ru":{
+        "content_selectors": [
+            ".text"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    },
+    "regnum.ru":{
+        "content_selectors": [
+            ".article-text"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    },
+    "newizv.ru":{
+        "content_selectors": [
+            ".content-blocks"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    },
+    "116.ru":{
+        "content_selectors": [
+            ".articleContent_fefJj"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    },
+    "osnmedia.ru":{
+        "content_selectors": [
+            "[itemprop=\"articleBody\"]"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    },
+    "pnp.ru":{
+        "content_selectors": [
+            ".js-mediator-article"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    },
+    "russian.rt.com":{
+        "content_selectors": [
+            ".js-mediator-article"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    },
+    "rg.ru":{
+        "content_selectors": [
+            ".PageContentCommonStyling_text__CKOzO"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    },
+    "mchs.gov.ru":{
+        "content_selectors": [
+            "[itemprop=\"articleBody\"]"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    },
+    "16.mchs.gov.ru":{
+        "content_selectors": [
+            "[itemprop=\"articleBody\"]"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    },
+    "inkazan.ru":{
+        "content_selectors": [
+            ".content-blocks"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
+    }
+}
