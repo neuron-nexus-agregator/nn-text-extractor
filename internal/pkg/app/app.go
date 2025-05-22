@@ -1,29 +1,32 @@
 package app
 
 import (
-	"log"
 	"os"
 	"sync"
 
+	"agregator/text-extractor/internal/interfaces"
 	model "agregator/text-extractor/internal/model/kafka"
 	"agregator/text-extractor/internal/service/extractor"
 	"agregator/text-extractor/internal/service/kafka"
 )
 
 type App struct {
-	ext   *extractor.Extractor
-	kafka *kafka.Kafka
+	ext    *extractor.Extractor
+	kafka  *kafka.Kafka
+	logger interfaces.Logger
 }
 
-func New() (*App, error) {
-	ext, err := extractor.New("../../config/cfg.json")
+func New(logger interfaces.Logger) (*App, error) {
+	ext, err := extractor.New("../../config/cfg.json", logger)
 	if err != nil {
+		logger.Error("Ошибка при создании сервиса извлечения текста", "error", err)
 		return nil, err
 	}
-	kafka := kafka.New([]string{os.Getenv("KAFKA_ADDR")}, "extract-full-text", "preprocessor", "extractor")
+	kafka := kafka.New([]string{os.Getenv("KAFKA_ADDR")}, "extract-full-text", "preprocessor", "extractor", logger)
 	return &App{
-		ext:   ext,
-		kafka: kafka,
+		ext:    ext,
+		kafka:  kafka,
+		logger: logger,
 	}, nil
 }
 
@@ -47,7 +50,7 @@ func (a *App) Run() {
 			if err == nil {
 				item.FullText = data
 			} else {
-				log.Default().Println(err)
+				a.logger.Error("Ошибка при извлечении текста", "error", err)
 			}
 			input <- item
 		}

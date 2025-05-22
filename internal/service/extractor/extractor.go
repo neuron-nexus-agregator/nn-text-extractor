@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -16,24 +15,29 @@ import (
 	"golang.org/x/text/transform"
 
 	"agregator/text-extractor/internal/model/configs"
+
+	"agregator/text-extractor/internal/interfaces"
 )
 
 type Extractor struct {
-	cfg *configs.Configs
+	cfg    *configs.Configs
+	logger interfaces.Logger
 }
 
 type Article struct {
 	Content string
 }
 
-func New(configFileParh string) (*Extractor, error) {
+func New(configFileParh string, logger interfaces.Logger) (*Extractor, error) {
 	cfg := &configs.Configs{}
 	err := cfg.Init(configFileParh)
 	if err != nil {
+		logger.Error("Ошибка инициализации конфигурации", "error", err)
 		return nil, err
 	}
 	return &Extractor{
-		cfg: cfg,
+		cfg:    cfg,
+		logger: logger,
 	}, nil
 }
 
@@ -42,16 +46,19 @@ func (e *Extractor) Extract(site string) (string, error) {
 	site = strings.ReplaceAll(site, "http://www.", "http://")
 	parsedURL, err := url.Parse(site)
 	if err != nil {
+		e.logger.Error("Ошибка парсинга URL", "error", err)
 		return "", fmt.Errorf("не удалось спарсить URL: %w", err)
 	}
 
 	config, ok := e.cfg.SiteConfigs[parsedURL.Hostname()]
 	if !ok {
+		e.logger.Warn("Конфигурация для домена не найдена", "domain", parsedURL.Hostname())
 		return "", fmt.Errorf("конфигурация для домена %s не найдена", parsedURL.Hostname())
 	}
 
 	req, err := http.NewRequest("GET", site, nil)
 	if err != nil {
+		e.logger.Error("Ошибка при создании запроса", "error", err)
 		return "", fmt.Errorf("ошибка при создании запроса: %w", err)
 	}
 
@@ -61,16 +68,19 @@ func (e *Extractor) Extract(site string) (string, error) {
 	client := &http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
+		e.logger.Error("Ошибка при выполнении запроса", "error", err)
 		return "", fmt.Errorf("ошибка при выполнении запроса: %w", err)
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
+		e.logger.Error("Неуспешный статус код", "status", res.StatusCode, "statusText", res.Status)
 		return "", fmt.Errorf("неуспешный статус код: %d — %s", res.StatusCode, res.Status)
 	}
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
+		e.logger.Error("Ошибка при чтении тела ответа", "error", err)
 		return "", fmt.Errorf("ошибка при чтении тела ответа: %w", err)
 	}
 
@@ -78,23 +88,24 @@ func (e *Extractor) Extract(site string) (string, error) {
 	_, encodingName, _ := charset.DetermineEncoding(body, res.Header.Get("Content-Type"))
 	if encodingName == "" {
 		encodingName = "utf-8"
-		log.Println("Не удалось определить кодировку, используем UTF-8 по умолчанию")
+		e.logger.Warn("Не удалось определить кодировку, используем UTF-8 по умолчанию")
 	}
 
-	utf8Body, err := convertEncoding(body, encodingName, "utf-8")
+	utf8Body, err := convertEncoding(body, encodingName, "utf-8", e.logger)
 	if err != nil {
-		log.Printf("Ошибка преобразования кодировки: %v, продолжаем с исходным текстом", err)
+		e.logger.Error("Ошибка при преобразовании кодировки", "error", err)
 		utf8Body = body
 	}
 
 	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(utf8Body))
 	if err != nil {
+		e.logger.Error("Ошибка при парсинге HTML", "error", err)
 		return "", fmt.Errorf("ошибка при парсинге HTML: %w", err)
 	}
 
 	content := extractContent(doc, &config)
 	if content == "" {
-		log.Default().Println("Контент не найден в основных контейнерах, поиск в body...")
+		e.logger.Warn("Контент не найден в основных контейнерах, поиск в body...")
 		content = extractFallbackContent(doc)
 	}
 
@@ -162,7 +173,7 @@ func cleanListItem(selection *goquery.Selection) string {
 	return text
 }
 
-func convertEncoding(body []byte, fromEncodingName, toEncodingName string) ([]byte, error) {
+func convertEncoding(body []byte, fromEncodingName, toEncodingName string, logger interfaces.Logger) ([]byte, error) {
 	if toEncodingName != "utf-8" {
 		return body, fmt.Errorf("целевая кодировка должна быть UTF-8")
 	}
@@ -178,12 +189,14 @@ func convertEncoding(body []byte, fromEncodingName, toEncodingName string) ([]by
 	case "utf-8", "":
 		return body, nil
 	default:
+		logger.Warn("Неподдерживаемая кодировка, используем UTF-8 по умолчанию")
 		return nil, fmt.Errorf("неподдерживаемая кодировка: %s", fromEncodingName)
 	}
 
 	reader := transform.NewReader(bytes.NewReader(body), fromEncoding.NewDecoder())
 	utf8Bytes, err := io.ReadAll(reader)
 	if err != nil {
+		logger.Error("Ошибка при преобразовании кодировки", "error", err)
 		return body, fmt.Errorf("ошибка преобразования кодировки из %s в UTF-8: %w", fromEncodingName, err)
 	}
 
