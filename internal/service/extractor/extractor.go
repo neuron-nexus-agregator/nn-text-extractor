@@ -188,6 +188,8 @@ func convertEncoding(body []byte, fromEncodingName, toEncodingName string, logge
 		fromEncoding = charmap.KOI8R
 	case "utf-8", "":
 		return body, nil
+	case "windows-1252":
+		fromEncoding = charmap.Windows1252
 	default:
 		logger.Warn("Неподдерживаемая кодировка, используем UTF-8 по умолчанию")
 		return nil, fmt.Errorf("неподдерживаемая кодировка: %s", fromEncodingName)

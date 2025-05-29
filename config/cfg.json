@@ -189,5 +189,12 @@
         ],
         "paragraph_selector": "p",
         "table_selector": "table" 
+    },
+    "360.ru":{
+        "content_selectors": [
+            "._5qclqh0"
+        ],
+        "paragraph_selector": "p",
+        "table_selector": "table" 
     }
 }
